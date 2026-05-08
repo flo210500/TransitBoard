@@ -1,0 +1,18 @@
+name: TransitBoard
+version: 1.0.0-b68
+main: de.transitboard.TransitBoardPlugin
+api-version: '1.20'
+description: Vollständiges Fahrgastinformationssystem für TrainCarts
+author: TransitBoard
+
+dependencies:
+  server:
+    Train_Carts:
+      load: BEFORE
+      required: true
+      join-classpath: true
+
+permissions:
+  transitboard.admin:
+    description: Plugin-Verwaltung
+    default: op
