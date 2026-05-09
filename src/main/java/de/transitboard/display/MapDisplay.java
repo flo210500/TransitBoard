@@ -39,34 +39,59 @@ public class MapDisplay {
         this.gleisId  = gleisId;
     }
 
-    /** Erstellt 4 Maps und registriert die Renderer. Gibt Map-IDs zurück. */
+    /** Erstellt 4 neue Maps und registriert die Renderer. Gibt Map-IDs zurück. */
     public List<Integer> create() {
         World world = Bukkit.getWorlds().get(0);
         maps.clear();
         mapIds.clear();
+        mapEntries.clear();
 
         for (int i = 0; i < 4; i++) {
             MapView view = Bukkit.createMap(world);
             view.setScale(MapView.Scale.FARTHEST);
             view.setTrackingPosition(false);
             view.setUnlimitedTracking(false);
-
-            // Standard-Renderer entfernen
             view.getRenderers().forEach(view::removeRenderer);
-
-            // Unseren Renderer hinzufügen
             view.addRenderer(new MapDisplayRenderer(plugin, station, gleisId, i, this));
-
             maps.add(view);
             mapIds.add(view.getId());
             mapEntries.add(new MapEntry(view.getId(), view));
         }
 
         plugin.debugLog("MapDisplay erstellt für " + station.getId()
-            + (gleisId != null ? "/" + gleisId : "")
-            + " – Map-IDs: " + mapIds);
+            + (gleisId != null ? "/" + gleisId : "") + " – Map-IDs: " + mapIds);
 
-        // Jede Sekunde das Bild neu rendern und an alle Spieler schicken
+        startUpdateTask();
+        return mapIds;
+    }
+
+    /** Stellt bestehende Maps nach Neustart wieder her (Renderer neu registrieren). */
+    public boolean restore(List<Integer> ids) {
+        maps.clear();
+        mapIds.clear();
+        mapEntries.clear();
+
+        for (int i = 0; i < ids.size(); i++) {
+            MapView view = Bukkit.getMap(ids.get(i));
+            if (view == null) {
+                plugin.getLogger().warning("MapDisplay: Map-ID " + ids.get(i) + " nicht gefunden!");
+                return false;
+            }
+            view.getRenderers().forEach(view::removeRenderer);
+            view.addRenderer(new MapDisplayRenderer(plugin, station, gleisId, i, this));
+            maps.add(view);
+            mapIds.add(view.getId());
+            mapEntries.add(new MapEntry(view.getId(), view));
+        }
+
+        plugin.debugLog("MapDisplay wiederhergestellt für " + station.getId()
+            + (gleisId != null ? "/" + gleisId : "") + " – Map-IDs: " + mapIds);
+
+        startUpdateTask();
+        return true;
+    }
+
+    private void startUpdateTask() {
         MapDisplayRenderer renderer = new MapDisplayRenderer(plugin, station, gleisId, 0, this);
         plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             setSharedImage(renderer.renderFullPublic());
@@ -77,8 +102,6 @@ public class MapDisplay {
                 }
             }
         }, 20L, 20L);
-
-        return mapIds;
     }
 
     public List<Integer> getMapIds()       { return mapIds; }

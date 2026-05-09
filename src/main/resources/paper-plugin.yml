@@ -1,5 +1,5 @@
 name: TransitBoard
-version: 1.0.0-b85
+version: 1.0.0-b86
 main: de.transitboard.TransitBoardPlugin
 api-version: '1.20'
 description: Vollständiges Fahrgastinformationssystem für TrainCarts

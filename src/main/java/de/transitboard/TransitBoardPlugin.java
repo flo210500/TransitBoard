@@ -87,6 +87,9 @@ public class TransitBoardPlugin extends JavaPlugin {
         startUpdateTask();
         registerCommands();
 
+        // Map-Displays nach Neustart wiederherstellen (1 Tick warten bis Welt geladen)
+        getServer().getScheduler().runTaskLater(this, this::restoreMapDisplays, 20L);
+
         getLogger().info("TransitBoard v" + getDescription().getVersion() + " gestartet.");
     }
 
@@ -271,6 +274,11 @@ public class TransitBoardPlugin extends JavaPlugin {
                         List<Integer> ids = md.create();
                         String regKey = gleisId != null ? stationId + "/" + gleisId : stationId;
                         mapDisplayRegistry.put(regKey, md);
+                        // IDs persistent speichern
+                        getConfig().set("map-displays." + regKey.replace("/", ".") + ".ids", ids);
+                        getConfig().set("map-displays." + regKey.replace("/", ".") + ".station", stationId);
+                        getConfig().set("map-displays." + regKey.replace("/", ".") + ".gleis", gleisId);
+                        saveConfig();
                         if (sender instanceof org.bukkit.entity.Player player) {
                             for (MapDisplay.MapEntry entry : md.getMapEntries()) {
                                 org.bukkit.inventory.ItemStack mapItem =
@@ -393,6 +401,29 @@ public class TransitBoardPlugin extends JavaPlugin {
 
     // stationId(+gleisId) → MapDisplay
     private final java.util.Map<String, MapDisplay> mapDisplayRegistry = new java.util.LinkedHashMap<>();
+    private void restoreMapDisplays() {
+        var section = getConfig().getConfigurationSection("map-displays");
+        if (section == null) return;
+        int restored = 0;
+        for (String key : section.getKeys(false)) {
+            var entry = section.getConfigurationSection(key);
+            if (entry == null) continue;
+            String stationId = entry.getString("station");
+            String gleisId   = entry.getString("gleis");
+            List<Integer> ids = (List<Integer>) entry.getList("ids");
+            if (stationId == null || ids == null || ids.isEmpty()) continue;
+            var station = configManager.getStations().get(stationId);
+            if (station == null) continue;
+            String regKey = gleisId != null ? stationId + "/" + gleisId : stationId;
+            MapDisplay md = new MapDisplay(this, station, gleisId);
+            if (md.restore(ids)) {
+                mapDisplayRegistry.put(regKey, md);
+                restored++;
+            }
+        }
+        if (restored > 0) debugLog(restored + " MapDisplay(s) wiederhergestellt.");
+    }
+
     public java.util.Map<String, MapDisplay> getMapDisplayRegistry() { return mapDisplayRegistry; }
 
     public SignStorage getSignStorage() { return signStorage; }

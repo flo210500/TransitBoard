@@ -7,7 +7,7 @@
 
     <groupId>de.transitboard</groupId>
     <artifactId>TransitBoard</artifactId>
-    <version>1.0.0-b85</version>
+    <version>1.0.0-b86</version>
     <packaging>jar</packaging>
 
     <properties>
