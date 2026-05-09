@@ -92,7 +92,7 @@ public class SignStorage {
             }
         }
 
-        log.info(count + " FIS-Schild(er) aus signs.yml geladen.");
+        plugin.debugLog(count + " FIS-Schild(er) aus signs.yml geladen.");
 
         // Alle Schilder auf Grundzustand zurücksetzen
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
@@ -160,11 +160,11 @@ public class SignStorage {
         writeSignLine(sign.getLoc1(), h, "", "", "");
         if (sign.getLoc2() != null) {
             String h2 = sign.isTriple() || sign.isQuad()
-                ? aqua + center("Ziel", 13) : aqua + center("Abfahrt", 13);
+                ? aqua + center(plugin.getConfigManager().getHeaderZiel(), 13) : aqua + center(plugin.getConfigManager().getHeaderAbfahrt(), 13);
             writeSignLine(sign.getLoc2(), h2, "", "", "");
         }
-        if (sign.getLoc3() != null) writeSignLine(sign.getLoc3(), aqua + center("Abfahrt", 13), "", "", "");
-        if (sign.getLoc4() != null) writeSignLine(sign.getLoc4(), aqua + center("Abfahrt", 13), "", "", "");
+        if (sign.getLoc3() != null) writeSignLine(sign.getLoc3(), aqua + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", "");
+        if (sign.getLoc4() != null) writeSignLine(sign.getLoc4(), aqua + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", "");
     }
 
     private void writeSignLine(org.bukkit.Location loc, String l0, String l1, String l2, String l3) {

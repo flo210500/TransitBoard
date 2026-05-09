@@ -54,6 +54,7 @@ public class TrainPosition {
     }
 
     public long getAccumulatedDelayMs() { return accumulatedDelayMs; }
+    public void setAccumulatedDelayMs(long ms) { this.accumulatedDelayMs = ms; }
 
     public String getTrainName()     { return trainName; }
     public String getLineName()      { return lineName; }

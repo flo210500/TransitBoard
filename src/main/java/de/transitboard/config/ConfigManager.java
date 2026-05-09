@@ -27,6 +27,9 @@ public class ConfigManager {
 
     private String formatSofort;
     private String formatMinutes;
+    private String headerAbfahrt;
+    private String headerZiel;
+    private String headerGleis;
     private String formatSeconds;
     private String formatLinePrefix;
     private String formatNoService;
@@ -50,6 +53,9 @@ public class ConfigManager {
 
         formatSofort     = plugin.getConfig().getString("format-sofort",     "Sofort");
         formatMinutes    = plugin.getConfig().getString("format-minutes",     "%d Min");
+        headerAbfahrt    = plugin.getConfig().getString("header-abfahrt",    "Abfahrt");
+        headerZiel       = plugin.getConfig().getString("header-ziel",       "Ziel");
+        headerGleis      = plugin.getConfig().getString("header-gleis",      "Gleis");
         formatSeconds    = plugin.getConfig().getString("format-seconds",     "%d Sek");
         formatLinePrefix = plugin.getConfig().getString("format-line-prefix", "[%s]");
         formatNoService  = plugin.getConfig().getString("format-no-service",  "Kein Betrieb");
@@ -62,7 +68,7 @@ public class ConfigManager {
                 try {
                     StationConfig s = parseStation(id, sc);
                     stations.put(id, s);
-                    log.info("Bahnhof geladen: " + id + " (" + s.getDisplayName()
+                    plugin.debugLog("Bahnhof geladen: " + id + " (" + s.getDisplayName()
                            + ") mit " + s.getGleise().size() + " Gleis(en)");
                 } catch (Exception e) {
                     log.warning("Fehler beim Laden von Bahnhof '" + id + "': " + e.getMessage());
@@ -71,7 +77,7 @@ public class ConfigManager {
         }
 
         loadLines();
-        log.info("Konfiguration geladen: " + stations.size() + " Bahnhof/Bahnhoefe, " + lines.size() + " Linie(n).");
+        plugin.debugLog("Konfiguration geladen: " + stations.size() + " Bahnhof/Bahnhoefe, " + lines.size() + " Linie(n).");
     }
 
     private StationConfig parseStation(String id, ConfigurationSection sc) {
@@ -87,7 +93,7 @@ public class ConfigManager {
                 // Schilder-Liste leer – wird dynamisch befüllt
                 gleise.put(gleisId.toLowerCase(),
                            new GleisConfig(gleisId.toLowerCase(), gleisName));
-                log.info("  Gleis geladen: " + gleisId + " (" + gleisName + ")");
+                plugin.debugLog("  Gleis geladen: " + gleisId + " (" + gleisName + ")");
             }
         }
 
@@ -116,6 +122,9 @@ public class ConfigManager {
     public int getHoldoverSeconds()     { return holdoverSeconds; }
     public String getFormatSofort()     { return formatSofort; }
     public String getFormatMinutes()    { return formatMinutes; }
+    public String getHeaderAbfahrt()    { return headerAbfahrt; }
+    public String getHeaderZiel()       { return headerZiel; }
+    public String getHeaderGleis()      { return headerGleis; }
     public String getFormatSeconds()    { return formatSeconds; }
     public String getFormatLinePrefix() { return formatLinePrefix; }
     public String getFormatNoService()  { return formatNoService; }
@@ -166,7 +175,7 @@ public class ConfigManager {
                     if (ann.contains("sequence-delay"))     lineConfig.setSequenceDelay(ann.getString("sequence-delay"));
                 }
                 lines.put(lineId, lineConfig);
-                log.info("Linie geladen: " + lineId + " (" + type + ") mit " + stops.size() + " Stops");
+                plugin.debugLog("Linie geladen: " + lineId + " (" + type + ") mit " + stops.size() + " Stops");
             }
         }
     }

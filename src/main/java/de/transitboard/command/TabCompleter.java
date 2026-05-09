@@ -23,7 +23,7 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
 
         if (args.length == 1) {
             // /td <sub>
-            result.addAll(List.of("reload", "status", "list", "nobetrieb", "line", "station", "debug"));
+            result.addAll(List.of("reload", "status", "list", "nobetrieb", "line", "station", "debug", "mapdisplay"));
 
         } else if (args.length == 2) {
             switch (args[0].toLowerCase()) {
@@ -37,6 +37,20 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
                                           "movestop", "rename", "setpos", "setcolor",
                                           "setdestination", "setdisplayname", "list", "info"));
             }
+
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("mapdisplay")) {
+            result.addAll(List.of("create", "getmap"));
+
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("mapdisplay")) {
+            if (args[1].equalsIgnoreCase("create"))
+                result.addAll(plugin.getConfigManager().getStations().keySet());
+            else if (args[1].equalsIgnoreCase("getmap"))
+                result.addAll(plugin.getMapDisplayRegistry().keySet());
+
+        } else if (args.length == 4 && args[0].equalsIgnoreCase("mapdisplay")
+                && args[1].equalsIgnoreCase("create")) {
+            var station = plugin.getConfigManager().getStations().get(args[2].toLowerCase());
+            if (station != null) result.addAll(station.getGleise().keySet());
 
         } else if (args.length == 3 && args[0].equalsIgnoreCase("nobetrieb")) {
             result.addAll(List.of("off"));

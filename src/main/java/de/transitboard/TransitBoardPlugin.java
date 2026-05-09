@@ -7,6 +7,7 @@ import de.transitboard.command.LineCommand;
 import de.transitboard.command.StationCommand;
 import de.transitboard.command.TabCompleter;
 import de.transitboard.config.ConfigManager;
+import de.transitboard.display.MapDisplay;
 import de.transitboard.display.SignUpdater;
 import de.transitboard.listener.FISSignListener;
 import de.transitboard.listener.SignBreakListener;
@@ -251,6 +252,71 @@ public class TransitBoardPlugin extends JavaPlugin {
             case "line"    -> new LineCommand(this).handle(sender, args);
             case "station" -> new StationCommand(this).handle(sender, args);
 
+            case "mapdisplay" -> {
+                if (args.length < 3) {
+                    sender.sendMessage("§cVerwendung: /td mapdisplay create <station> [gleis]");
+                    sender.sendMessage("§cVerwendung: /td mapdisplay getmap <id>");
+                    return true;
+                }
+                switch (args[1].toLowerCase()) {
+                    case "create" -> {
+                        String stationId = args[2].toLowerCase();
+                        String gleisId   = args.length >= 4 ? args[3].toLowerCase() : null;
+                        var station = configManager.getStations().get(stationId);
+                        if (station == null) {
+                            sender.sendMessage("§cBahnhof '" + stationId + "' nicht gefunden!");
+                            return true;
+                        }
+                        MapDisplay md = new MapDisplay(this, station, gleisId);
+                        List<Integer> ids = md.create();
+                        String regKey = gleisId != null ? stationId + "/" + gleisId : stationId;
+                        mapDisplayRegistry.put(regKey, md);
+                        if (sender instanceof org.bukkit.entity.Player player) {
+                            for (MapDisplay.MapEntry entry : md.getMapEntries()) {
+                                org.bukkit.inventory.ItemStack mapItem =
+                                    new org.bukkit.inventory.ItemStack(org.bukkit.Material.FILLED_MAP);
+                                var meta = (org.bukkit.inventory.meta.MapMeta) mapItem.getItemMeta();
+                                meta.setMapView(entry.view());
+                                meta.setDisplayName(" ");
+                                mapItem.setItemMeta(meta);
+                                player.getInventory().addItem(mapItem);
+                            }
+                            sender.sendMessage("§a4 FIS-Maps ins Inventar gelegt! IDs: §f" + ids);
+                            sender.sendMessage("§7Platziere sie nebeneinander in Item-Frames.");
+                        } else {
+                            sender.sendMessage("§a4 Maps erstellt! IDs: §f" + ids);
+                        }
+                    }
+                    case "getmap" -> {
+                        if (!(sender instanceof org.bukkit.entity.Player player)) {
+                            sender.sendMessage("§cNur für Spieler.");
+                            return true;
+                        }
+                        String regKey = args[2].toLowerCase();
+                        if (args.length >= 4) regKey += "/" + args[3].toLowerCase();
+                        MapDisplay md = mapDisplayRegistry.get(regKey);
+                        if (md == null) {
+                            sender.sendMessage("§cKein MapDisplay für '" + regKey + "' gefunden.");
+                            sender.sendMessage("§7Verfügbar: §f" + mapDisplayRegistry.keySet());
+                            return true;
+                        }
+                        for (MapDisplay.MapEntry entry : md.getMapEntries()) {
+                            org.bukkit.inventory.ItemStack mapItem =
+                                new org.bukkit.inventory.ItemStack(org.bukkit.Material.FILLED_MAP);
+                            var meta = (org.bukkit.inventory.meta.MapMeta) mapItem.getItemMeta();
+                            meta.setMapView(entry.view());
+                            meta.setDisplayName(" ");
+                            mapItem.setItemMeta(meta);
+                            player.getInventory().addItem(mapItem);
+                        }
+                        sender.sendMessage("§a4 FIS-Maps für §f'" + regKey + "' §ains Inventar gelegt.");
+                    }
+                    default -> {
+                        sender.sendMessage("§cVerwendung: /td mapdisplay create <station> [gleis]");
+                        sender.sendMessage("§cVerwendung: /td mapdisplay getmap <station> [gleis]");
+                    }
+                }
+            }
             case "nobetrieb" -> {
                 if (args.length < 2) {
                     sender.sendMessage("§cVerwendung: /td nobetrieb <bahnhofId>");
@@ -325,7 +391,11 @@ public class TransitBoardPlugin extends JavaPlugin {
     public void setDebugMode(boolean debug) { this.debugMode = debug; }
     public void debugLog(String msg) { if (debugMode) getLogger().info("[DEBUG] " + msg); }
 
-    public SignStorage getSignStorage()     { return signStorage; }
+    // stationId(+gleisId) → MapDisplay
+    private final java.util.Map<String, MapDisplay> mapDisplayRegistry = new java.util.LinkedHashMap<>();
+    public java.util.Map<String, MapDisplay> getMapDisplayRegistry() { return mapDisplayRegistry; }
+
+    public SignStorage getSignStorage() { return signStorage; }
     /** Lädt Config und Schilder neu – nach jedem Command aufrufen. */
     public void reloadAll() {
         configManager.load();

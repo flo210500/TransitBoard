@@ -127,11 +127,11 @@ public class SignUpdater extends BukkitRunnable {
                     String gName = ChatColor.DARK_AQUA + center(gleis.getDisplayName(), 13);
                     if (gs.isTriple()) {
                         writeLines(gs.getLoc1(), List.of(gName, "", "", ""));
-                        writeLines(gs.getLoc2(), List.of(ChatColor.DARK_AQUA + center("Ziel", 13), "", "", ""));
-                        writeLines(gs.getLoc3(), List.of(ChatColor.DARK_AQUA + center("Abfahrt", 13), "", "", ""));
+                        writeLines(gs.getLoc2(), List.of(ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderZiel(), 13), "", "", ""));
+                        writeLines(gs.getLoc3(), List.of(ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", ""));
                     } else if (gs.isDouble()) {
                         writeLines(gs.getLoc1(), List.of(gName, "", "", ""));
-                        writeLines(gs.getLoc2(), List.of(ChatColor.DARK_AQUA + center("Abfahrt", 13), "", "", ""));
+                        writeLines(gs.getLoc2(), List.of(ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", ""));
                     } else {
                         writeLines(gs.getLoc1(), List.of(gName, "", "", ""));
                     }
@@ -161,9 +161,9 @@ public class SignUpdater extends BukkitRunnable {
 
     private void writeClear(FISSign sign, String stationName) {
         String sName = ChatColor.DARK_AQUA + center(stationName, 13);
-        String sZiel = ChatColor.DARK_AQUA + center("Ziel", 13);
-        String sAbfahrt = ChatColor.DARK_AQUA + center("Abfahrt", 13);
-        String sGleis = ChatColor.DARK_AQUA + center("Gleis", 13);
+        String sZiel = ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderZiel(), 13);
+        String sAbfahrt = ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderAbfahrt(), 13);
+        String sGleis = ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderGleis(), 13);
         List<String> empty = List.of("", "", "", "");
         if (sign.isQuad()) {
             writeLines(sign.getLoc1(), List.of(sGleis, "", "", ""));
@@ -251,6 +251,7 @@ public class SignUpdater extends BukkitRunnable {
                     pos.getLineName(),
                     coloredName,
                     destination,
+                    station.getId(),
                     gleis.getId(),
                     gleis.getDisplayName(),
                     eta,

@@ -1,6 +1,8 @@
 de\transitboard\command\StationCommand.class
+de\transitboard\display\MapDisplay.class
 de\transitboard\model\FISSign.class
 de\transitboard\model\TrackKey.class
+de\transitboard\display\MapDisplay$MapEntry.class
 de\transitboard\store\LineTimingStore.class
 de\transitboard\model\ActiveRun.class
 de\transitboard\model\LineConfig.class
@@ -33,3 +35,4 @@ de\transitboard\command\LineCommand.class
 de\transitboard\model\TrainPosition.class
 de\transitboard\model\StationConfig.class
 de\transitboard\store\TimingStorage.class
+de\transitboard\display\MapDisplayRenderer.class

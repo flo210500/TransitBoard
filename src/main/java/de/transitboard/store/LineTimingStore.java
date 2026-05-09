@@ -56,7 +56,12 @@ public class LineTimingStore {
      * Zug fährt über [TDTimer] – startet an startStationId auf Linie lineName.
      */
     public void startAt(String trainName, String lineName, String startStationId, int direction) {
+        // Alte Verspätung übernehmen wenn der Zug schon bekannt ist
+        TrainPosition old = positions.get(trainName);
+        long carryOver = (old != null) ? old.getAccumulatedDelayMs() : 0;
+
         TrainPosition pos = new TrainPosition(trainName, lineName, startStationId, direction);
+        if (carryOver > 0) pos.setAccumulatedDelayMs(carryOver);
         positions.put(trainName, pos);
         debugLog("Zug '" + trainName + "' gestartet: Linie=" + lineName
                + " Station=" + startStationId + " dir=" + direction);

@@ -23,6 +23,8 @@ public class StationState {
 
     public Status getStatus() { return status; }
 
+    public List<UpcomingArrival> getLastArrivals() { return lastArrivals; }
+
     public void setNoService() {
         status = Status.NO_SERVICE;
         lastArrivals = List.of();

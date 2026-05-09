@@ -29,7 +29,8 @@ public class FISSignListener implements Listener {
     public void onSignChange(SignChangeEvent event) {
         String line0 = event.getLine(0);
         if (line0 == null) return;
-        if (!line0.trim().toLowerCase().replace("[","").replace("]","").equals("tdanzeige")) return;
+        String header = line0.trim().toLowerCase().replace("[","").replace("]","");
+        if (!header.equals("tdanzeige") && !header.equals("tddisplay")) return;
 
         if (!event.getPlayer().hasPermission("transitboard.admin")) {
             event.getPlayer().sendMessage(ChatColor.RED + "Keine Berechtigung.");
@@ -132,10 +133,10 @@ public class FISSignListener implements Listener {
             event.setLine(0, ChatColor.DARK_AQUA + center(gleisName, 13));
             event.setLine(1, ""); event.setLine(2, ""); event.setLine(3, "");
             if (gleisMode == FISSign.Mode.TRIPLE) {
-                initSign(gleis2, ChatColor.DARK_AQUA + center("Ziel", 13), "", "", "");
-                initSign(gleis3, ChatColor.DARK_AQUA + center("Abfahrt", 13), "", "", "");
+                initSign(gleis2, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderZiel(), 13), "", "", "");
+                initSign(gleis3, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", "");
             } else if (gleisMode == FISSign.Mode.DOUBLE) {
-                initSign(gleis2, ChatColor.DARK_AQUA + center("Abfahrt", 13), "", "", "");
+                initSign(gleis2, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", "");
             }
             event.getPlayer().sendMessage(ChatColor.GREEN
                 + "Gleis-FIS (" + gleisMode.name().toLowerCase()
@@ -159,20 +160,20 @@ public class FISSignListener implements Listener {
             case DOUBLE -> {
                 event.setLine(0, ChatColor.DARK_AQUA + center(stationName, 13));
                 event.setLine(1, ""); event.setLine(2, ""); event.setLine(3, "");
-                initSign(loc2, ChatColor.DARK_AQUA + center("Abfahrt", 13), "", "", "");
+                initSign(loc2, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", "");
             }
             case TRIPLE -> {
                 event.setLine(0, ChatColor.DARK_AQUA + center(stationName, 13));
                 event.setLine(1, ""); event.setLine(2, ""); event.setLine(3, "");
-                initSign(loc2, ChatColor.DARK_AQUA + center("Ziel", 13), "", "", "");
-                initSign(loc3, ChatColor.DARK_AQUA + center("Abfahrt", 13), "", "", "");
+                initSign(loc2, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderZiel(), 13), "", "", "");
+                initSign(loc3, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", "");
             }
             case QUAD -> {
-                event.setLine(0, ChatColor.DARK_AQUA + center("Gleis", 13));
+                event.setLine(0, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderGleis(), 13));
                 event.setLine(1, ""); event.setLine(2, ""); event.setLine(3, "");
                 initSign(loc2, ChatColor.DARK_AQUA + center(stationName, 13), "", "", "");
-                initSign(loc3, ChatColor.DARK_AQUA + center("Ziel", 13), "", "", "");
-                initSign(loc4, ChatColor.DARK_AQUA + center("Abfahrt", 13), "", "", "");
+                initSign(loc3, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderZiel(), 13), "", "", "");
+                initSign(loc4, ChatColor.DARK_AQUA + center(plugin.getConfigManager().getHeaderAbfahrt(), 13), "", "", "");
             }
         }
     }

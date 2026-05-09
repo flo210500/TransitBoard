@@ -24,6 +24,8 @@ C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\command\L
 C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\store\LineTimingStorage.java
 C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\store\TimingStore.java
 C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\announcement\AnnouncementConfig.java
+C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\display\MapDisplay.java
 C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\store\TimingStorage.java
+C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\display\MapDisplayRenderer.java
 C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\listener\FISSignEditListener.java
 C:\Users\flo21\IdeaProjects\TransitBoard\src\main\java\de\transitboard\command\TabCompleter.java

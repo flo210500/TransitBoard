@@ -9,26 +9,33 @@ public class UpcomingArrival implements Comparable<UpcomingArrival> {
 
     private final String trainName;
     private final String lineName;
-    private final String coloredLineName; // z.B. "§1U1§r"
+    private final String coloredLineName;
     private final String destination;
+    private final String stationId;      // Station-ID
     private final String gleisId;
     private final String gleisDisplayName;
     private final long etaSeconds;
-
-    private final long delaySeconds;  // 0 = pünktlich, >0 = Verspätung in Sekunden
+    private final long delaySeconds;
 
     public UpcomingArrival(String trainName, String lineName, String destination,
                            String gleisId, String gleisDisplayName, long etaSeconds) {
-        this(trainName, lineName, lineName, destination, gleisId, gleisDisplayName, etaSeconds, 0L);
+        this(trainName, lineName, lineName, destination, "", gleisId, gleisDisplayName, etaSeconds, 0L);
     }
 
     public UpcomingArrival(String trainName, String lineName, String coloredLineName,
                            String destination, String gleisId, String gleisDisplayName,
                            long etaSeconds, long delaySeconds) {
+        this(trainName, lineName, coloredLineName, destination, "", gleisId, gleisDisplayName, etaSeconds, delaySeconds);
+    }
+
+    public UpcomingArrival(String trainName, String lineName, String coloredLineName,
+                           String destination, String stationId, String gleisId, String gleisDisplayName,
+                           long etaSeconds, long delaySeconds) {
         this.trainName        = trainName;
         this.lineName         = lineName;
         this.coloredLineName  = coloredLineName != null ? coloredLineName : lineName;
         this.destination      = destination != null ? destination : "";
+        this.stationId        = stationId != null ? stationId : "";
         this.gleisId          = gleisId;
         this.gleisDisplayName = gleisDisplayName;
         this.etaSeconds       = etaSeconds;
@@ -41,6 +48,7 @@ public class UpcomingArrival implements Comparable<UpcomingArrival> {
     public String getLineName()         { return lineName; }
     public String getColoredLineName()   { return coloredLineName; }
     public String getDestination()      { return destination; }
+    public String getStationId()        { return stationId; }
     public String getGleisId()          { return gleisId; }
     public String getGleisDisplayName() { return gleisDisplayName; }
     public long   getEtaSeconds()       { return etaSeconds; }

@@ -13,6 +13,9 @@ update-interval: 20
 
 format-sofort:       "Sofort"
 format-minutes:      "%d Min"
+header-abfahrt:      "Abfahrt"      # Kopfzeile auf Abfahrts-Schildern
+header-ziel:         "Ziel"         # Kopfzeile auf Ziel-Schildern
+header-gleis:        "Gleis"        # Kopfzeile auf Gleis-Schildern
 format-seconds:      "%d Sek"
 format-line-prefix:  "[%s]"
 format-no-service:   "Kein Betrieb"
